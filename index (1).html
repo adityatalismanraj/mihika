@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Little Birthday Quest 🎀</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffe4f0 0%, #f8d7f0 40%, #e8d5ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 28px;
+      padding: 2.5rem 2rem;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 8px 48px rgba(200, 80, 180, 0.13);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, #f9b8e0 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, #d8b8ff 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .emoji-big { font-size: 3.2rem; margin-bottom: 1rem; display: block; }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #b5277a;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #9b2fa0;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      color: #6a3068;
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .affirmation {
+      background: linear-gradient(135deg, #ffe0f7, #f3d0ff);
+      border-radius: 16px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      color: #7a1b7e;
+      font-weight: 500;
+      font-size: 1rem;
+      border-left: 4px solid #d86bcc;
+      text-align: left;
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #e8509a, #c038b8);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 2.2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 18px rgba(200, 60, 170, 0.28);
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200, 60, 170, 0.35); }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-purple {
+      background: linear-gradient(135deg, #b87ddb, #9b55cc);
+    }
+
+    .progress {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 1.75rem;
+    }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #e0b8f0;
+      transition: background 0.3s;
+    }
+    .dot.done { background: #c038b8; }
+
+    .riddle-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      border: 2px solid #e0a8e8;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      color: #6a3068;
+      margin: 0.75rem 0;
+      background: #fff0fb;
+      outline: none;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .riddle-input:focus { border-color: #c038b8; }
+
+    .hint {
+      color: #b060c0;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+      min-height: 1.3rem;
+    }
+
+    .wrong { color: #d63366; }
+    .correct { color: #3ca05a; }
+
+    .balloons {
+      font-size: 2rem;
+      letter-spacing: 0.6rem;
+      margin: 0.75rem 0;
+      display: inline-block;
+      animation: bob 2.2s infinite ease-in-out;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .stars-row {
+      font-size: 1.5rem;
+      letter-spacing: 0.5rem;
+      margin: 0.75rem 0;
+    }
+
+    .clickable-star {
+      cursor: pointer;
+      display: inline-block;
+      font-size: 2.2rem;
+      transition: transform 0.2s;
+      user-select: none;
+    }
+    .clickable-star:hover { transform: scale(1.3) rotate(10deg); }
+
+    .word-game {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .word-btn {
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
+      border: 2px solid #d8a0e8;
+      background: #fff0fb;
+      color: #8a2090;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .word-btn:hover { background: #f0d0ff; border-color: #c038b8; }
+    .word-btn.selected {
+      background: linear-gradient(135deg, #e8509a, #c038b8);
+      color: white;
+      border-color: #c038b8;
+    }
+
+    .chosen-words {
+      min-height: 52px;
+      background: #fff8fe;
+      border-radius: 14px;
+      border: 2px dashed #d8a0e8;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      color: #9b2fa0;
+      font-weight: 600;
+      letter-spacing: 0.05rem;
+      margin: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .confetti-bar {
+      overflow: hidden;
+      font-size: 1.5rem;
+      letter-spacing: 0.4rem;
+      margin: 0.5rem 0 1rem;
+      white-space: nowrap;
+      animation: slide 4s linear infinite;
+    }
+    @keyframes slide {
+      0% { transform: translateX(60%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .final-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #e8509a, #9b2fa0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .signature {
+      font-size: 0.9rem;
+      color: #b060c0;
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+
+    <!-- Step 0: Intro -->
+    <div class="step active" id="step-0">
+      <span class="emoji-big">🎀</span>
+      <h1>Hey you! 👀</h1>
+      <p>Someone who thinks you're pretty amazing<br>made this little adventure just for you.</p>
+      <p>It's a tiny birthday quest —<br>play through and collect your gift at the end! 🎁</p>
+      <div class="balloons">🎈🎈🎈</div>
+      <br>
+      <button class="btn" onclick="nextStep()">Let's gooo! ✨</button>
+    </div>
+
+    <!-- Step 1: Riddle -->
+    <div class="step" id="step-1">
+      <span class="emoji-big">🧩</span>
+      <h2>Riddle me this!</h2>
+      <p>I have cities, but no houses live there.<br>
+         I have mountains, but no trees grow there.<br>
+         I have water, but no fish swim there.<br>
+         I have roads, but no cars drive there.</p>
+      <p style="font-size:0.88rem; color:#b060c0;">What am I?</p>
+      <input class="riddle-input" id="riddle-input" type="text" placeholder="Type your answer..." oninput="checkRiddle(this.value)" />
+      <div class="hint" id="riddle-hint"></div>
+      <button class="btn" id="riddle-btn" onclick="nextStep()" style="display:none;">Nice one! Next →</button>
+    </div>
+
+    <!-- Step 2: Star collector -->
+    <div class="step" id="step-2">
+      <span class="emoji-big">⭐</span>
+      <h2>Collect your stars!</h2>
+      <p>Click every star to light them up.<br>You deserve them all! 🌟</p>
+      <div id="star-grid" style="margin: 1rem 0; font-size: 2.2rem; letter-spacing: 0.5rem;">
+        <span class="clickable-star" onclick="lightStar(this)">☆</span>
+        <span class="clickable-star" onclick="lightStar(this)">☆</span>
+        <span class="clickable-star" onclick="lightStar(this)">☆</span>
+        <span class="clickable-star" onclick="lightStar(this)">☆</span>
+        <span class="clickable-star" onclick="lightStar(this)">☆</span>
+        <span class="clickable-star" onclick="lightStar(this)">☆</span>
+      </div>
+      <div class="affirmation">You are the kind of person who makes a room warmer just by walking in. 🌸</div>
+      <button class="btn" id="star-btn" onclick="nextStep()" style="display:none;">I'm glowing! ✨ Next →</button>
+    </div>
+
+    <!-- Step 3: Word game -->
+    <div class="step" id="step-3">
+      <span class="emoji-big">💬</span>
+      <h2>Build your birthday mantra!</h2>
+      <p>Pick 3 words that are SO you 👇</p>
+      <div class="word-game" id="word-buttons">
+        <button class="word-btn" onclick="selectWord(this, 'Radiant')">Radiant ✨</button>
+        <button class="word-btn" onclick="selectWord(this, 'Bold')">Bold 🔥</button>
+        <button class="word-btn" onclick="selectWord(this, 'Kind')">Kind 🌷</button>
+        <button class="word-btn" onclick="selectWord(this, 'Unstoppable')">Unstoppable 💪</button>
+        <button class="word-btn" onclick="selectWord(this, 'Magical')">Magical 🪄</button>
+        <button class="word-btn" onclick="selectWord(this, 'Fierce')">Fierce 🦁</button>
+        <button class="word-btn" onclick="selectWord(this, 'Joyful')">Joyful 🎉</button>
+        <button class="word-btn" onclick="selectWord(this, 'Brilliant')">Brilliant 💡</button>
+        <button class="word-btn" onclick="selectWord(this, 'Dreamy')">Dreamy 🌙</button>
+      </div>
+      <div class="chosen-words" id="chosen-words">Your mantra will appear here...</div>
+      <div class="hint" id="word-hint"></div>
+      <button class="btn btn-purple" id="word-btn" onclick="nextStep()" style="display:none;">That's me! Next →</button>
+    </div>
+
+    <!-- Step 4: Lucky number -->
+    <div class="step" id="step-4">
+      <span class="emoji-big">🔐</span>
+      <h2>One last thing...</h2>
+      <p>What's 3 + today's birthday girl's luck? 🍀<br>
+         <em style="font-size:0.88rem; color:#b060c0;">(Hint: luck is always 7!)</em></p>
+      <input class="riddle-input" id="luck-input" type="number" placeholder="Your answer..." oninput="checkLuck(this.value)" />
+      <div class="hint" id="luck-hint"></div>
+      <button class="btn" id="luck-btn" onclick="nextStep()" style="display:none;">Open the gift! 🎁</button>
+    </div>
+
+    <!-- Step 5: Final wish -->
+    <div class="step" id="step-5">
+      <div class="confetti-bar">🎊 🎉 🎈 🌸 🎂 ✨ 🎁 💖 🎊 🎉</div>
+      <span class="emoji-big">🎂</span>
+      <div class="final-title">Happy Birthday!</div>
+      <p style="font-size:1.05rem; color:#7a1b7e; font-weight:600;">
+        You just completed your birthday quest — and honestly, that's very on-brand for someone as awesome as you.
+      </p>
+      <div class="affirmation">
+        You are <strong id="final-words" style="color:#9b2fa0;"></strong> —<br>
+        and this birthday is just the universe agreeing with all of us. 🥂
+      </div>
+      <p>May this year bring you everything you've been dreaming of —<br>and a few happy surprises along the way. 🌟</p>
+      <div class="stars-row">⭐🌟💫✨🌸</div>
+      <div class="balloons">🎈🎉🎈</div>
+      <p class="signature">From someone who's really glad you exist 🎀</p>
+    </div>
+
+  </div>
+
+  <script>
+    let currentStep = 0;
+    const TOTAL_STEPS = 6;
+    let starCount = 0;
+    let selectedWords = [];
+
+    function renderProgress() {
+      const bar = document.getElementById('progress');
+      bar.innerHTML = '';
+      for (let i = 0; i < TOTAL_STEPS - 1; i++) {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i < currentStep ? ' done' : '');
+        bar.appendChild(d);
+      }
+    }
+
+    function nextStep() {
+      document.getElementById('step-' + currentStep).classList.remove('active');
+      currentStep++;
+      document.getElementById('step-' + currentStep).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      renderProgress();
+    }
+
+    function checkRiddle(val) {
+      const clean = val.toLowerCase().trim();
+      const hint = document.getElementById('riddle-hint');
+      const btn = document.getElementById('riddle-btn');
+      if (clean === 'map' || clean === 'a map') {
+        hint.innerHTML = '<span class="correct">🎉 Yes!! You\'re so smart! A map!</span>';
+        btn.style.display = 'inline-block';
+      } else if (clean.length > 2) {
+        hint.innerHTML = '<span class="wrong">Hmm, think geography! 🗺️</span>';
+        btn.style.display = 'none';
+      } else {
+        hint.innerHTML = '';
+        btn.style.display = 'none';
+      }
+    }
+
+    function lightStar(el) {
+      if (el.classList.contains('lit')) return;
+      el.classList.add('lit');
+      el.textContent = '⭐';
+      starCount++;
+      if (starCount >= 6) {
+        document.getElementById('star-btn').style.display = 'inline-block';
+      }
+    }
+
+    function selectWord(el, word) {
+      if (el.classList.contains('selected')) {
+        el.classList.remove('selected');
+        selectedWords = selectedWords.filter(w => w !== word);
+      } else {
+        if (selectedWords.length >= 3) {
+          document.getElementById('word-hint').innerHTML = '<span class="wrong">Only 3! Deselect one first 😊</span>';
+          return;
+        }
+        el.classList.add('selected');
+        selectedWords.push(word);
+        document.getElementById('word-hint').innerHTML = '';
+      }
+      const display = document.getElementById('chosen-words');
+      if (selectedWords.length === 0) {
+        display.textContent = 'Your mantra will appear here...';
+      } else {
+        display.textContent = selectedWords.join(' · ');
+      }
+      document.getElementById('word-btn').style.display = selectedWords.length === 3 ? 'inline-block' : 'none';
+      if (selectedWords.length === 3) {
+        document.getElementById('final-words').textContent = selectedWords.join(', ');
+      }
+    }
+
+    function checkLuck(val) {
+      const hint = document.getElementById('luck-hint');
+      const btn = document.getElementById('luck-btn');
+      if (parseInt(val) === 10) {
+        hint.innerHTML = '<span class="correct">🎁 Correct! 3 + 7 = 10! Here comes your gift!</span>';
+        btn.style.display = 'inline-block';
+      } else if (val.length > 0) {
+        hint.innerHTML = '<span class="wrong">Think lucky number + 3 🍀</span>';
+        btn.style.display = 'none';
+      } else {
+        hint.innerHTML = '';
+        btn.style.display = 'none';
+      }
+    }
+
+    renderProgress();
+  </script>
+</body>
+</html>
