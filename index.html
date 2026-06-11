@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Mahi 🐾</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0e;
+      --bg2: #141414;
+      --bg3: #1a1a1a;
+      --line: rgba(255,255,255,0.08);
+      --text: #e8e4df;
+      --muted: #888;
+      --accent: #c9a96e;
+      --white: #f5f2ee;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .wrap {
+      max-width: 480px;
+      width: 100%;
+    }
+
+    /* Music player */
+    .music-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .music-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,169,110,0.4);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+    .music-btn:hover { background: rgba(201,169,110,0.1); }
+
+    .music-info { flex: 1; }
+    .music-title {
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      font-weight: 400;
+    }
+    .music-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 1px;
+      letter-spacing: 0.05em;
+    }
+
+    .music-wave {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 20px;
+    }
+    .music-wave span {
+      display: block;
+      width: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      opacity: 0.5;
+      animation: wave 1.2s ease-in-out infinite;
+    }
+    .music-wave span:nth-child(1){ height: 6px; animation-delay: 0s; }
+    .music-wave span:nth-child(2){ height: 14px; animation-delay: 0.2s; }
+    .music-wave span:nth-child(3){ height: 10px; animation-delay: 0.4s; }
+    .music-wave span:nth-child(4){ height: 16px; animation-delay: 0.1s; }
+    .music-wave span:nth-child(5){ height: 8px; animation-delay: 0.3s; }
+    .music-wave.paused span { animation-play-state: paused; opacity: 0.2; }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.4); }
+    }
+
+    /* Steps */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    /* Progress — minimal dots */
+    .dots {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 2.5rem;
+    }
+    .dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--line);
+      transition: background 0.4s, transform 0.3s;
+    }
+    .dot.done { background: var(--accent); transform: scale(1.3); }
+
+    /* Typography */
+    .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      font-weight: 300;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+
+    p strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
+      margin: 1.5rem 0;
+    }
+
+    /* Choices — minimal cards */
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .choice {
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 0.9rem 1.1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--muted);
+      transition: all 0.25s;
+      text-align: left;
+      font-family: 'Jost', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: 0.02em;
+    }
+    .choice .ico { font-size: 1.1rem; flex-shrink: 0; }
+    .choice:hover {
+      border-color: rgba(201,169,110,0.35);
+      color: var(--text);
+      background: rgba(201,169,110,0.04);
+    }
+    .choice.selected {
+      border-color: var(--accent);
+      color: var(--white);
+      background: rgba(201,169,110,0.07);
+    }
+
+    /* Reveal */
+    .reveal {
+      display: none;
+      margin-top: 1.25rem;
+    }
+
+    .reveal-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.7;
+      border-left: 2px solid var(--accent);
+      padding-left: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Button */
+    .btn {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid rgba(201,169,110,0.4);
+      color: var(--accent);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.7rem 1.75rem;
+      border-radius: 1px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn:hover {
+      background: rgba(201,169,110,0.1);
+      border-color: var(--accent);
+      color: var(--white);
+    }
+
+    /* Dog paw subtle watermark */
+    .paw {
+      font-size: 0.9rem;
+      opacity: 0.3;
+      margin-left: 4px;
+    }
+
+    /* Final step */
+    .final-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .final-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 2;
+      margin: 1.25rem 0;
+    }
+
+    .final-letter em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .trait-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .trait {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      padding: 4px 12px;
+      border-radius: 1px;
+    }
+    .trait.gold {
+      color: var(--accent);
+      border-color: rgba(201,169,110,0.3);
+    }
+
+    .sig {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      line-height: 1.9;
+    }
+    .sig span {
+      color: rgba(201,169,110,0.5);
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Music -->
+  <div class="music-bar">
+    <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Play / Pause">▶</button>
+    <div class="music-info">
+      <div class="music-title">Until I Found You — Instrumental</div>
+      <div class="music-sub">playing softly, just for you</div>
+    </div>
+    <div class="music-wave paused" id="music-wave">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <audio id="audio" loop>
+    <source src="until_i_found_you.mp3
