@@ -37,69 +37,6 @@
       width: 100%;
     }
 
-    /* Music player */
-    .music-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 3rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .music-btn {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1px solid rgba(201,169,110,0.4);
-      background: transparent;
-      color: var(--accent);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem;
-      transition: all 0.3s;
-      flex-shrink: 0;
-    }
-    .music-btn:hover { background: rgba(201,169,110,0.1); }
-
-    .music-info { flex: 1; }
-    .music-title {
-      font-size: 0.78rem;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      font-weight: 400;
-    }
-    .music-sub {
-      font-size: 0.7rem;
-      color: var(--muted);
-      margin-top: 1px;
-      letter-spacing: 0.05em;
-    }
-
-    .music-wave {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      height: 20px;
-    }
-    .music-wave span {
-      display: block;
-      width: 2px;
-      background: var(--accent);
-      border-radius: 2px;
-      opacity: 0.5;
-      animation: wave 1.2s ease-in-out infinite;
-    }
-    .music-wave span:nth-child(1){ height: 6px; animation-delay: 0s; }
-    .music-wave span:nth-child(2){ height: 14px; animation-delay: 0.2s; }
-    .music-wave span:nth-child(3){ height: 10px; animation-delay: 0.4s; }
-    .music-wave span:nth-child(4){ height: 16px; animation-delay: 0.1s; }
-    .music-wave span:nth-child(5){ height: 8px; animation-delay: 0.3s; }
-    .music-wave.paused span { animation-play-state: paused; opacity: 0.2; }
-
-    @keyframes wave {
-      0%, 100% { transform: scaleY(1); }
-      50% { transform: scaleY(0.4); }
-    }
 
     /* Steps */
     .step { display: none; }
@@ -318,18 +255,3 @@
 </head>
 <body>
 <div class="wrap">
-
-  <!-- Music -->
-  <div class="music-bar">
-    <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Play / Pause">▶</button>
-    <div class="music-info">
-      <div class="music-title">Until I Found You — Instrumental</div>
-      <div class="music-sub">playing softly, just for you</div>
-    </div>
-    <div class="music-wave paused" id="music-wave">
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
-  </div>
-
-  <audio id="audio" loop>
-    <source src="until_i_found_you.mp3
